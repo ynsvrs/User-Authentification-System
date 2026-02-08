@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.db import get_db
+from app.settings.database import get_db
 from app.auth import verify_token
 import tables.users as user_tables
 
