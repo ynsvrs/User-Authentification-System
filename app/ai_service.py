@@ -1,20 +1,27 @@
-import os
 from google import genai
-from dotenv import load_dotenv
-
-load_dotenv()
+import os
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-system_prompt = "Отвечай на вопросы подробно, смешно и по предоставленному контексту."
+system_prompt = "Ты AI ассистент. Отвечай логично и продолжай диалог."
 
-def ask_gemini(question: str, context: str):
+
+def ask_gemini(messages: list):
+    conversation = ""
+
+    for msg in messages:
+        role = msg["role"]
+        content = msg["content"]
+
+        if role == "user":
+            conversation += f"Пользователь: {content}\n"
+        else:
+            conversation += f"Ассистент: {content}\n"
+
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        config={
-            "system_instruction": system_prompt
-        },
-        contents=f"Контекст: {context}\n\nВопрос пользователя: {question}",
+        config={"system_instruction": system_prompt},
+        contents=conversation
     )
 
     return response.text
